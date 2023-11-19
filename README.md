@@ -1,5 +1,5 @@
 # FinalProject
-Submission for CIS263AA Final Project
+Submission for CIS263AA Final Project.
 I chose to make a chess game for my final.
 To win, trap your opponents king such that they cannot make a move without their king being captured. Stalemate*
 You capture, or remove, an enemy piece by placing your piece on top of theirs.
