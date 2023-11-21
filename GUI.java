@@ -48,8 +48,8 @@ public class GUI extends JFrame implements ActionListener
    }
    
    /*
-   setPlayerNames (74): JMenuItem; sets white and black player names to values in JOptionPane input
-   gameBoardButtons (92): JButton Array; If a piece is alive on chosen square it is selected, otherwise the selected piece is moved to the square
+   setPlayerNames (57): JMenuItem; sets white and black player names to values in JOptionPane input
+   resetGame (75): calls function Board.resetGame() to set the board back to start
    */
    @Override
    public void actionPerformed(ActionEvent e){
