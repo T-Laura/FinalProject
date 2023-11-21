@@ -99,7 +99,6 @@ public class Board implements ActionListener
                         else{
                            pieceColor = 1;
                         }
-                        int pieceType;
                         if (selectedPiece instanceof Pawns){
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(pawnImages[pieceColor][0]));
