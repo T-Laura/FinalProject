@@ -1,33 +1,43 @@
+import java.util.LinkedList;
+
 public abstract class Pieces     //Parent class for King, Queen, Rook, Knight, Bishop, Pawn
 {
    private int rank;
    private char file;
    private boolean whitePiece;
-   private boolean alive;
+   protected boolean notMoved;
    
    public Pieces(int pieceRank, char pieceFile, boolean white) throws UnavailableSquareException{
       if (pieceRank < 1 || pieceRank > 8){
          throw new UnavailableSquareException();
       }
-      Pieces.charFileToInt(pieceFile);
+      try{
+         Pieces.charFileToInt(pieceFile);
+      }
+      catch (UnavailableSquareException e){
+         throw e;
+      }
       rank = pieceRank;
       file = pieceFile;
       whitePiece = white;
+      notMoved = true;
    }
    
-   public abstract String[] getAvailableMoves(String[] friendlyPiecesOnBoard, String[] enemyPiecesOnBoard);
+   public abstract LinkedList<String> getAvailableMoves(LinkedList<Pieces> otherPieces);
    
    public void setPosition(int pieceRank, char pieceFile) throws UnavailableSquareException{
       if (pieceRank < 1 || pieceRank > 8){
          throw new UnavailableSquareException();
       }
-      Pieces.charFileToInt(pieceFile);
+      try{
+         Pieces.charFileToInt(pieceFile);
+      }
+      catch (UnavailableSquareException e){
+         throw e;
+      }
       rank = pieceRank;
       file = pieceFile;
-   }
-   
-   public void setPieceAliveStatus(boolean living){
-      alive = living;
+      notMoved = false;
    }
    
    public int getRank(){
@@ -37,9 +47,13 @@ public abstract class Pieces     //Parent class for King, Queen, Rook, Knight, B
    public char getFile(){
       return file;
    }
+
+   public boolean getWhitePiece(){
+      return whitePiece;
+   }
    
-   public boolean getPieceAliveStatus(){
-      return alive;
+   public boolean getNotMoved(){
+      return notMoved;
    }
    
    public static char intToCharFile(int intFile) throws UnavailableSquareException{
