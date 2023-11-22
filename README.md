@@ -11,8 +11,9 @@ Rooks can move to any space horizontal or vertical from them.
 Queens can move to any space horizontal, vertical, or diagonal from them.
 Kings can move to any of the 8 adjacent spaces. (read Castling*).
 *En Passant: If a pawn moves two spaces on its first move, for ONLY the next turn the pawn can be captured by enemy pawns as though it had only been moved one square.
-*Castling: A king can move two spaces on its first turn and place the rook it moves towards on the other side of the king, IF the king hasn't moved, the rook the king moves towards hasn't move, there are no pieces in the way, the king is not currently in check, AND the king doesn't move through or into check.
+*Castling: A king can move two spaces and place the rook it moves towards on the other side of the king, IF the king hasn't moved, the rook the king moves towards hasn't move, and there are no pieces in the way.
 Draws:
 *Stalemate occurs when a player has no available moves that won't put their king in danger, but their king is not currently targeted by a piece.
+Threefold Repetition occurs when a state on the board is reached three times; this is so that the game can end before the 50-move rule.
 Lack of Material on either side, such that nobody can claim a win, will result in a draw.
 The 50-Move Rule ensures that games can't drag on indefinitely. After 50 moves without a pawn advancing or a piece being captured the game ends in a draw.
