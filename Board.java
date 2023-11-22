@@ -5,25 +5,26 @@ import java.awt.event.*;
 
 public class Board implements ActionListener
 {
-   private int i, j;
-   private boolean whitesTurn;
-   private boolean pieceSelected;
-   private String selectedTile;
-   private Pieces selectedPiece;
-   private Pawns previousPawn;
-   private LinkedList<Pieces> piecesOnBoard;
-   private Image lightSquare = new ImageIcon("Images/LightSquare.png").getImage();
-   private Image darkSquare = new ImageIcon("Images/DarkSquare.png").getImage();
+   private int i, j;                            //Iterators commonly used
+   private boolean whitesTurn;                  //Tracker for current turn
+   private boolean pieceSelected;               //For determining if a move can be made
+   private String selectedTile;                 //For determining valid piece selections
+   private Pieces selectedPiece;                //Memory for current selected piece
+   private Pawns previousPawn;                  //Memory for previous selected piece if it was a pawn (for En Passant)
+   private LinkedList<Pieces> piecesOnBoard;    //LinkedList for containing pieces currently on board
+   private Image lightSquare = new ImageIcon("Images/LightSquare.png").getImage();  //Basic square for white spaces
+   private Image darkSquare = new ImageIcon("Images/DarkSquare.png").getImage();    //Basic square for black spaces
    private Image[][] pawnImages = {{new ImageIcon("Images/WhitePawnLightSquare.png").getImage(), new ImageIcon("Images/WhitePawnDarkSquare.png").getImage()}
-                                  ,{new ImageIcon("Images/BlackPawnLightSquare.png").getImage(), new ImageIcon("Images/BlackPawnDarkSquare.png").getImage()}};
+   /*Images for all pawns*/       ,{new ImageIcon("Images/BlackPawnLightSquare.png").getImage(), new ImageIcon("Images/BlackPawnDarkSquare.png").getImage()}};
    private Image[][] bishopImages = {{new ImageIcon("Images/WhiteBishopLightSquare.png").getImage(), new ImageIcon("Images/WhiteBishopDarkSquare.png").getImage()}
-                                    ,{new ImageIcon("Images/BlackBishopLightSquare.png").getImage(), new ImageIcon("Images/BlackBishopDarkSquare.png").getImage()}};
-   private Image[][] queenImages = {{new ImageIcon("Images/WhiteQueenLightSquare.png").getImage(), new ImageIcon("Imgaes/WhiteQueenDarkSquare.png").getImage()}
-                                   ,{new ImageIcon("Images/BlackQueenLightSquare.png").getImage(), new ImageIcon("Images/BlackQueenDarkSquare.png").getImage()}};
+   /*Images for all bishops*/       ,{new ImageIcon("Images/BlackBishopLightSquare.png").getImage(), new ImageIcon("Images/BlackBishopDarkSquare.png").getImage()}};
+   private Image[][] queenImages = {{new ImageIcon("Images/WhiteQueenLightSquare.png").getImage(), new ImageIcon("Imgaes/WhiteQueenDarkSquare.png").getImage()}      //Second image in this row will not show
+   /*Images for all queens*/       ,{new ImageIcon("Images/BlackQueenLightSquare.png").getImage(), new ImageIcon("Images/BlackQueenDarkSquare.png").getImage()}};
    private Image[][] rookImages = {{new ImageIcon("Images/WhiteRookLightSquare.png").getImage(), new ImageIcon("Images/WhiteRookDarkSquare.png").getImage()}
-                                  ,{new ImageIcon("Images/BlackRookLightSquare.png").getImage(), new ImageIcon("Images/BlackRookDarkSquare.png").getImage()}};
-   private JButton[][] gameBoardButtons = new JButton[8][8];
+   /*Images for all rooks*/       ,{new ImageIcon("Images/BlackRookLightSquare.png").getImage(), new ImageIcon("Images/BlackRookDarkSquare.png").getImage()}};
+   private JButton[][] gameBoardButtons = new JButton[8][8];   //Button array for game board
    
+   //Instantiates buttons and adds ActionListeners; Also call Board.resetGame()
    public Board(){
       for (i = 0; i < 8; i++){
          for (j = 0; j < 8; j++){
@@ -39,12 +40,12 @@ public class Board implements ActionListener
    public void actionPerformed(ActionEvent e){
       Object source = e.getSource();
       for (i = 0; i < 8; i++){
-         for (j = 0; j < 8; j++){
-            if (source == gameBoardButtons[i][j]){
+         for (j = 0; j < 8; j++){                     //Iterator finds location of button pressed
+            if (source == gameBoardButtons[i][j]){    //Space on board is denoted as j+1(as characters 'a' through 'h'), 8-i
                if (!pieceSelected){
-                  try{
+                  try{                 //If last button pressed wasn't valid piece
                      selectedTile = String.valueOf(Pieces.intToCharFile(j + 1)) + String.valueOf(8 - i);
-                     for (Pieces piece : piecesOnBoard){
+                     for (Pieces piece : piecesOnBoard){       //Check all pieces for if they equal the selected tile and are on the team of the player whos turn it is
                         if (((String.valueOf(piece.getFile()) + String.valueOf(piece.getRank())).equals(selectedTile)) && (piece.getWhitePiece() == whitesTurn)){
                            pieceSelected = true;
                            selectedPiece = piece;
@@ -55,18 +56,18 @@ public class Board implements ActionListener
                      JOptionPane.showMessageDialog(null, ex.getMessage());
                   }
                }
-               else{
-                  try{
+               else{                   //If last button pressed was a valid piece
+                  try{                 //Check if new button pressed is contained within valid piece moves of previous button
                      if (selectedPiece.getAvailableMoves(piecesOnBoard).contains(String.valueOf(Pieces.intToCharFile(j + 1)) + String.valueOf(8 - i))){
-                        for (Pieces piece : piecesOnBoard){
+                        for (Pieces piece : piecesOnBoard){    //Check if space piece moved to contained another piece
                            if ((piece.getFile() == Pieces.intToCharFile(j + 1)) && (piece.getRank() == (8 - i))){
                               piecesOnBoard.remove(piece);
                               break;
                            }
-                           if (piece instanceof Pawns && selectedPiece instanceof Pawns){
+                           if (piece instanceof Pawns && selectedPiece instanceof Pawns){    //Check En Passant capture and replace image of pawn with blank tile
                               if (previousPawn == (Pawns)piece && previousPawn.getMovedTwice()){
                                  if (selectedPiece.getWhitePiece()){
-                                    if ((piece.getFile() == Pieces.intToCharFile(j + 1)) && (piece.getRank() == ((8 - i) - 1))){
+                                    if ((piece.getFile() == Pieces.intToCharFile(j + 1)) && (piece.getRank() == ((8 - i) - 1))){    //-1 for white direction
                                        if ((Pieces.charFileToInt(selectedTile.charAt(0)) + Integer.parseInt(String.valueOf(selectedTile.charAt(1)))) % 2 == 0){
                                           gameBoardButtons[8 - piece.getRank()][Pieces.charFileToInt(piece.getFile()) - 1].setIcon(new ImageIcon(lightSquare));
                                        }
@@ -78,7 +79,7 @@ public class Board implements ActionListener
                                     }
                                  }
                                  else{
-                                    if ((piece.getFile() == Pieces.intToCharFile(j + 1)) && (piece.getRank() == ((8 - i) + 1))){
+                                    if ((piece.getFile() == Pieces.intToCharFile(j + 1)) && (piece.getRank() == ((8 - i) + 1))){    //+1 for black direction
                                        if ((Pieces.charFileToInt(selectedTile.charAt(0)) + Integer.parseInt(String.valueOf(selectedTile.charAt(1)))) % 2 == 0){
                                           gameBoardButtons[8 - piece.getRank()][Pieces.charFileToInt(piece.getFile()) - 1].setIcon(new ImageIcon(lightSquare));
                                        }
@@ -93,13 +94,13 @@ public class Board implements ActionListener
                            }
                         }
                         int pieceColor;
-                        if (whitesTurn){
+                        if (whitesTurn){     //assign piece color for Image Arrays
                            pieceColor = 0;
                         }
                         else{
                            pieceColor = 1;
                         }
-                        if (selectedPiece instanceof Pawns){
+                        if (selectedPiece instanceof Pawns){      //Move pawn to square
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(pawnImages[pieceColor][0]));
                            }
@@ -107,7 +108,7 @@ public class Board implements ActionListener
                               gameBoardButtons[i][j].setIcon(new ImageIcon(pawnImages[pieceColor][1]));
                            }
                         }
-                        else if (selectedPiece instanceof Bishops){
+                        else if (selectedPiece instanceof Bishops){     //Move bishop to square
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(bishopImages[pieceColor][0]));
                            }
@@ -115,29 +116,29 @@ public class Board implements ActionListener
                               gameBoardButtons[i][j].setIcon(new ImageIcon(bishopImages[pieceColor][1]));
                            }
                         }
-                        else if (selectedPiece instanceof Queens){
+                        else if (selectedPiece instanceof Queens){      //Move queen to square
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][0]));
                            }
                            else{
-                              gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][1]));
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][1]));    //queenImages[0][1] is "Images/WhiteQueenDarkSquare.png"
                            }
                         }
-                        else if (selectedPiece instanceof Rooks){
+                        else if (selectedPiece instanceof Rooks){       //Move rook to square
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(rookImages[pieceColor][0]));
                            }
                            else{
                               gameBoardButtons[i][j].setIcon(new ImageIcon(rookImages[pieceColor][1]));
                            }
-                        }
+                        }        //Make old square selection into emplty tile
                         if ((Pieces.charFileToInt(selectedTile.charAt(0)) + Integer.parseInt(String.valueOf(selectedTile.charAt(1)))) % 2 == 0){
                            gameBoardButtons[8 - Integer.parseInt(String.valueOf(selectedTile.charAt(1)))][Pieces.charFileToInt(selectedTile.charAt(0)) - 1].setIcon(new ImageIcon(darkSquare));
                         }
                         else{
                            gameBoardButtons[8 - Integer.parseInt(String.valueOf(selectedTile.charAt(1)))][Pieces.charFileToInt(selectedTile.charAt(0)) - 1].setIcon(new ImageIcon(lightSquare));
                         }
-                        int previousRank = selectedPiece.getRank();
+                        int previousRank = selectedPiece.getRank();                       //Check if pawn was moved twice (for En Passant)
                         selectedPiece.setPosition(8 - i, Pieces.intToCharFile(j + 1));
                         if (selectedPiece instanceof Pawns){
                            if ((selectedPiece.getRank() - 2) == previousRank || (selectedPiece.getRank() + 2) == previousRank){
@@ -145,7 +146,7 @@ public class Board implements ActionListener
                               previousPawn.setMovedTwice(true);
                            }
                         }
-                        if (selectedPiece instanceof Pawns){
+                        if (selectedPiece instanceof Pawns){      //Check for pawn promotions (pawn on first/last rank)
                            previousPawn = (Pawns)selectedPiece;
                            if (previousPawn.checkLastRank()){
                               selectedPiece = new Queens(selectedPiece.getRank(), selectedPiece.getFile(), selectedPiece.getWhitePiece());
@@ -159,13 +160,13 @@ public class Board implements ActionListener
                         }
                         pieceSelected = false;
                         whitesTurn = !whitesTurn;
-                        if (previousPawn != null && previousPawn.getWhitePiece() == whitesTurn){
+                        if (previousPawn != null && previousPawn.getWhitePiece() == whitesTurn){      //Reset pawn double moves for next player (for En Passant)
                            previousPawn.setMovedTwice(false);
                         }
                      }
-                     else{
+                     else{       //Available move was not selected
                         pieceSelected = false;
-                        for (Pieces piece : piecesOnBoard){
+                        for (Pieces piece : piecesOnBoard){       //Check if new selection is allowed
                            if (((String.valueOf(piece.getFile()) + String.valueOf(piece.getRank())).equals(String.valueOf(Pieces.intToCharFile(j + 1)) + String.valueOf(8 - i))) && (whitesTurn == piece.getWhitePiece())){
                               pieceSelected = true;
                               selectedTile = String.valueOf(Pieces.intToCharFile(j + 1)) + String.valueOf(8 - i);
@@ -183,6 +184,7 @@ public class Board implements ActionListener
       }
    }
    
+   //Sets the initial board state and adds values to LinkedList<Pieces> piecesOnBoard
    public void resetGame(){
       gameBoardButtons[0][0].setIcon(new ImageIcon(rookImages[1][0]));
       gameBoardButtons[0][1].setIcon(new ImageIcon(darkSquare));
@@ -248,6 +250,7 @@ public class Board implements ActionListener
       pieceSelected = false;
    }
    
+   //For sending buttons to JFrame
    public JButton[][] getButtonsArray(){
       return gameBoardButtons;
    }
