@@ -5,7 +5,7 @@ public abstract class Pieces     //Parent class for King, Queen, Rook, Knight, B
    private int rank;
    private char file;
    private boolean whitePiece;
-   protected boolean notMoved;
+   private boolean notMoved;
    
    public Pieces(int pieceRank, char pieceFile, boolean white) throws UnavailableSquareException{
       if (pieceRank < 1 || pieceRank > 8){

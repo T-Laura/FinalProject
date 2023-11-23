@@ -19,9 +19,9 @@ public class Queens extends Pieces
                   availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                }
             }
-            else{
-               availableMoves.add(String.valueOf(this.getFile()) + String.valueOf(this.getRank() + i));
-            }
+         }
+         if (!blocked){
+            availableMoves.add(String.valueOf(this.getFile()) + String.valueOf(this.getRank() + i));
          }
          i++;
          if (blocked){
@@ -38,9 +38,9 @@ public class Queens extends Pieces
                   availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                }
             }
-            else{
-               availableMoves.add(String.valueOf(this.getFile()) + String.valueOf(this.getRank() - i));
-            }
+         }
+         if (!blocked){
+            availableMoves.add(String.valueOf(this.getFile()) + String.valueOf(this.getRank() - i));
          }
          i++;
          if (blocked){
@@ -58,9 +58,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank()));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank()));
             }
             i++;
             if (blocked){
@@ -81,9 +81,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank()));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank()));
             }
             i++;
             if (blocked){
@@ -104,9 +104,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank() + i));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank() + i));
             }
             i++;
             if (blocked){
@@ -127,9 +127,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank() + i));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank() + i));
             }
             i++;
             if (blocked){
@@ -150,9 +150,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank() - i));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - i)) + String.valueOf(this.getRank() - i));
             }
             i++;
             if (blocked){
@@ -173,9 +173,9 @@ public class Queens extends Pieces
                      availableMoves.add(String.valueOf(piece.getFile()) + String.valueOf(piece.getRank()));
                   }
                }
-               else{
-                  availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank() - i));
-               }
+            }
+            if (!blocked){
+               availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + i)) + String.valueOf(this.getRank() - i));
             }
             i++;
             if (blocked){

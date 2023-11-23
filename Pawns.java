@@ -23,6 +23,7 @@ public class Pawns extends Pieces
       for (Pieces piece : otherPieces){
          if ((piece.getFile() == this.getFile()) && (piece.getRank() == (this.getRank() + pawnDirection))){
             forwardMovesStopped = true;
+            break;
          }
       }
       if (!forwardMovesStopped){
@@ -33,6 +34,7 @@ public class Pawns extends Pieces
          for (Pieces piece : otherPieces){
             if ((piece.getFile() == this.getFile()) && (piece.getRank() == (this.getRank() + (pawnDirection * 2)))){
                forwardMovesStopped = true;
+               break;
             }
          }
          if (!forwardMovesStopped){

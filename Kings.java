@@ -21,10 +21,6 @@ public class Kings extends Pieces
                blocked = true;
                break;
             }
-            if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(this.getFile()) + String.valueOf(this.getRank() + 1))){
-               blocked = true;
-               break;
-            }
          }
          if (!blocked){
             availableMoves.add(String.valueOf(this.getFile()) + String.valueOf(this.getRank() + 1));
@@ -34,10 +30,6 @@ public class Kings extends Pieces
       if (this.getRank() - 1 >= 1){
          for (Pieces piece : otherPieces){
             if ((piece.getFile() == this.getFile()) && (piece.getRank() == (this.getRank() - 1)) && (piece.getWhitePiece() == this.getWhitePiece())){
-               blocked = true;
-               break;
-            }
-            if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(this.getFile()) + String.valueOf(this.getRank() - 1))){
                blocked = true;
                break;
             }
@@ -51,10 +43,6 @@ public class Kings extends Pieces
          if (Pieces.charFileToInt(this.getFile()) + 1 <= 8){
             for (Pieces piece : otherPieces){
                if ((piece.getFile() == Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) && (piece.getRank() == this.getRank()) && (piece.getWhitePiece() == this.getWhitePiece())){
-                  blocked = true;
-                  break;
-               }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) + String.valueOf(this.getRank()))){
                   blocked = true;
                   break;
                }
@@ -74,10 +62,6 @@ public class Kings extends Pieces
                   blocked = true;
                   break;
                }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank()))){
-                  blocked = true;
-                  break;
-               }
             }
             if (!blocked){
                availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank()));
@@ -91,10 +75,6 @@ public class Kings extends Pieces
          if (Pieces.charFileToInt(this.getFile()) + 1 <= 8 && this.getRank() + 1 <= 8){
             for (Pieces piece : otherPieces){
                if ((piece.getFile() == Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) && (piece.getRank() == (this.getRank() + 1)) && (piece.getWhitePiece() == this.getWhitePiece())){
-                  blocked = true;
-                  break;
-               }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) + String.valueOf(this.getRank() + 1))){
                   blocked = true;
                   break;
                }
@@ -114,10 +94,6 @@ public class Kings extends Pieces
                   blocked = true;
                   break;
                }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank() + 1))){
-                  blocked = true;
-                  break;
-               }
             }
             if (!blocked){
                availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank() + 1));
@@ -134,10 +110,6 @@ public class Kings extends Pieces
                   blocked = true;
                   break;
                }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank() - 1))){
-                  blocked = true;
-                  break;
-               }
             }
             if (!blocked){
                availableMoves.add(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) - 1)) + String.valueOf(this.getRank() - 1));
@@ -151,10 +123,6 @@ public class Kings extends Pieces
          if (Pieces.charFileToInt(this.getFile()) + 1 <= 8 && this.getRank() - 1 >= 1){
             for (Pieces piece : otherPieces){
                if ((piece.getFile() == Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) && (piece.getRank() == (this.getRank() - 1)) && (piece.getWhitePiece() == this.getWhitePiece())){
-                  blocked = true;
-                  break;
-               }
-               if (piece.getWhitePiece() != this.getWhitePiece() && piece.getAvailableMoves(otherPieces).contains(String.valueOf(Pieces.intToCharFile(Pieces.charFileToInt(this.getFile()) + 1)) + String.valueOf(this.getRank() - 1))){
                   blocked = true;
                   break;
                }

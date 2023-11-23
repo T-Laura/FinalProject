@@ -2,6 +2,9 @@ import java.util.LinkedList;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.nio.file.*;
+import static java.nio.file.StandardOpenOption.*;
 
 public class Board implements ActionListener
 {
@@ -26,7 +29,10 @@ public class Board implements ActionListener
    /*Images for all queens*/       ,{new ImageIcon("Images/BlackQueenLightSquare.png").getImage(), new ImageIcon("Images/BlackQueenDarkSquare.png").getImage()}};
    private Image[][] rookImages = {{new ImageIcon("Images/WhiteRookLightSquare.png").getImage(), new ImageIcon("Images/WhiteRookDarkSquare.png").getImage()}
    /*Images for all rooks*/       ,{new ImageIcon("Images/BlackRookLightSquare.png").getImage(), new ImageIcon("Images/BlackRookDarkSquare.png").getImage()}};
-   private JButton[][] gameBoardButtons = new JButton[8][8];   //Button array for game board
+   private JButton[][] gameBoardButtons = new JButton[8][8];                                    //Button array for game board
+   private JLabel[] namesArray = {new JLabel("White"), new JLabel("vs"), new JLabel("Black")};  //JLabels for player names
+   private JTextField notationField = new JTextField();                                         //JTextField to hold notations
+   private JButton notationButton = new JButton("Notation Move");                               //JButton for activating notationField
    
    //Instantiates buttons and adds ActionListeners; Also call Board.resetGame()
    public Board(){
@@ -36,13 +42,42 @@ public class Board implements ActionListener
             gameBoardButtons[i][j].addActionListener(this);
          }
       }
+      notationButton.addActionListener(this);
       
       this.resetGame();
    }
    
    @Override
-   public void actionPerformed(ActionEvent e){
-      Object source = e.getSource();
+   public void actionPerformed(ActionEvent event){
+      Object source = event.getSource();
+      if (source == notationButton){
+         boolean validPiece = false;
+         boolean validMove = false;
+         for (Pieces piece : piecesOnBoard){
+            if (piece.getFile() == notationField.getText().charAt(0) && String.valueOf(piece.getRank()).equals(String.valueOf(notationField.getText().charAt(1))) && whitesTurn == piece.getWhitePiece()){
+               validPiece = true;
+               if (piece.getAvailableMoves(piecesOnBoard).contains(String.valueOf(notationField.getText().charAt(3)) + String.valueOf(notationField.getText().charAt(4)))){
+                  validMove = true;
+                  try{
+                     selectedTile = String.valueOf(notationField.getText().charAt(0)) + String.valueOf(notationField.getText().charAt(1));
+                     pieceSelected = true;
+                     selectedPiece = piece;
+                     source = gameBoardButtons[8 - Integer.parseInt(String.valueOf(notationField.getText().charAt(4)))][Pieces.charFileToInt(notationField.getText().charAt(3)) - 1];
+                     break;
+                  }
+                  catch (UnavailableSquareException e){
+                     JOptionPane.showMessageDialog(null, e.getMessage() + "(" + notationField.getText().charAt(3) + notationField.getText().charAt(4) + ")");
+                  }
+               }
+            }
+         }
+         if (!validPiece){
+            JOptionPane.showMessageDialog(null, "No valid pieces on " + notationField.getText().charAt(0) + notationField.getText().charAt(1));
+         }
+         else if (!validMove){
+            JOptionPane.showMessageDialog(null, "Selected piece can't move to " + notationField.getText().charAt(3) + notationField.getText().charAt(4));
+         }
+      }
       for (i = 0; i < 8; i++){
          for (j = 0; j < 8; j++){                     //Iterator finds location of button pressed
             if (source == gameBoardButtons[i][j]){    //Space on board is denoted as j+1(as characters 'a' through 'h'), 8-i
@@ -56,8 +91,8 @@ public class Board implements ActionListener
                         }
                      }
                   }
-                  catch (UnavailableSquareException ex){
-                     JOptionPane.showMessageDialog(null, ex.getMessage());
+                  catch (UnavailableSquareException e){
+                     JOptionPane.showMessageDialog(null, e.getMessage());
                   }
                }
                else{                   //If last button pressed was a valid piece
@@ -226,6 +261,48 @@ public class Board implements ActionListener
                         if (previousPawn != null && previousPawn.getWhitePiece() == whitesTurn){      //Reset pawn double moves for next player (for En Passant)
                            previousPawn.setMovedTwice(false);
                         }
+                        boolean whiteKingAlive = false;
+                        boolean blackKingAlive = false;
+                        for (Pieces piece : piecesOnBoard){
+                           if (piece instanceof Kings){
+                              if (piece.getWhitePiece()){
+                                 whiteKingAlive = true;
+                              }
+                              if (!piece.getWhitePiece()){
+                                 blackKingAlive = true;
+                              }
+                           }
+                        }
+                        if (!whiteKingAlive){
+                           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Would you like to save game result to a file?", null, JOptionPane.YES_NO_OPTION)){
+                              OutputStream output = null;
+                              try{
+                                 output = new BufferedOutputStream(Files.newOutputStream(Paths.get(JOptionPane.showInputDialog(null, "Enter the filepath for results to be saved to")), WRITE));
+                                 output.write((namesArray[0].getText() + " 0 - 1 " + namesArray[2].getText()).getBytes());
+                                 output.flush();
+                                 output.close();
+                              }
+                              catch (IOException e){
+                                 JOptionPane.showMessageDialog(null, "IO Exception");
+                              }
+                           }
+                           resetGame();
+                        }
+                        else if (!blackKingAlive){
+                           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Would you like to save game result to a file?", null, JOptionPane.YES_NO_OPTION)){
+                              OutputStream output = null;
+                              try{
+                                 output = new BufferedOutputStream(Files.newOutputStream(Paths.get(JOptionPane.showInputDialog(null, "Enter the filepath for results to be saved to")), WRITE));
+                                 output.write((namesArray[0].getText() + " 1 - 0 " + namesArray[2].getText()).getBytes());
+                                 output.flush();
+                                 output.close();
+                              }
+                              catch (IOException e){
+                                 JOptionPane.showMessageDialog(null, "IO Exception");
+                              }
+                           }
+                           resetGame();
+                        }
                      }
                      else{       //Available move was not selected
                         pieceSelected = false;
@@ -238,8 +315,8 @@ public class Board implements ActionListener
                         }
                      }
                   }
-                  catch (UnavailableSquareException ex){
-                     JOptionPane.showMessageDialog(null, ex.getMessage());
+                  catch (UnavailableSquareException e){
+                     JOptionPane.showMessageDialog(null, e.getMessage());
                   }
                }
             }
@@ -323,5 +400,17 @@ public class Board implements ActionListener
    //For sending buttons to JFrame
    public JButton[][] getButtonsArray(){
       return gameBoardButtons;
+   }
+   
+   public JLabel[] getNameLabels(){
+      return namesArray;
+   }
+   
+   public JTextField getNotationField(){
+      return notationField;
+   }
+   
+   public JButton getNotationButton(){
+      return notationButton;
    }
 }
