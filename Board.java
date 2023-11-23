@@ -18,7 +18,11 @@ public class Board implements ActionListener
    /*Images for all pawns*/       ,{new ImageIcon("Images/BlackPawnLightSquare.png").getImage(), new ImageIcon("Images/BlackPawnDarkSquare.png").getImage()}};
    private Image[][] bishopImages = {{new ImageIcon("Images/WhiteBishopLightSquare.png").getImage(), new ImageIcon("Images/WhiteBishopDarkSquare.png").getImage()}
    /*Images for all bishops*/       ,{new ImageIcon("Images/BlackBishopLightSquare.png").getImage(), new ImageIcon("Images/BlackBishopDarkSquare.png").getImage()}};
-   private Image[][] queenImages = {{new ImageIcon("Images/WhiteQueenLightSquare.png").getImage(), new ImageIcon("Imgaes/WhiteQueenDarkSquare.png").getImage()}      //Second image in this row will not show
+   private Image[][] kingImages = {{new ImageIcon("Images/WhiteKingLightSquare.png").getImage(), new ImageIcon("Images/WhiteKingDarkSquare.png").getImage()}
+   /*Images for all kings*/       ,{new ImageIcon("Images/BlackKingLightSquare.png").getImage(), new ImageIcon("Images/BlackKingDarkSquare.png").getImage()}};
+   private Image[][] knightImages = {{new ImageIcon("Images/WhiteKnightLightSquare.png").getImage(), new ImageIcon("Images/WhiteKnightDarkSquare.png").getImage()}
+   /*Images for all knights*/       ,{new ImageIcon("Images/BlackKnightLightSquare.png").getImage(), new ImageIcon("Images/BlackKnightDarkSquare.png").getImage()}};
+   private Image[][] queenImages = {{new ImageIcon("Images/WhiteQueenLightSquare.png").getImage(), new ImageIcon("Images/WhiteQueenDarkSquare.png").getImage()}
    /*Images for all queens*/       ,{new ImageIcon("Images/BlackQueenLightSquare.png").getImage(), new ImageIcon("Images/BlackQueenDarkSquare.png").getImage()}};
    private Image[][] rookImages = {{new ImageIcon("Images/WhiteRookLightSquare.png").getImage(), new ImageIcon("Images/WhiteRookDarkSquare.png").getImage()}
    /*Images for all rooks*/       ,{new ImageIcon("Images/BlackRookLightSquare.png").getImage(), new ImageIcon("Images/BlackRookDarkSquare.png").getImage()}};
@@ -45,7 +49,7 @@ public class Board implements ActionListener
                if (!pieceSelected){
                   try{                 //If last button pressed wasn't valid piece
                      selectedTile = String.valueOf(Pieces.intToCharFile(j + 1)) + String.valueOf(8 - i);
-                     for (Pieces piece : piecesOnBoard){       //Check all pieces for if they equal the selected tile and are on the team of the player whos turn it is
+                     for (Pieces piece : piecesOnBoard){       //Check all pieces for if they equal the selected tile and are on the team of the player whose turn it is
                         if (((String.valueOf(piece.getFile()) + String.valueOf(piece.getRank())).equals(selectedTile)) && (piece.getWhitePiece() == whitesTurn)){
                            pieceSelected = true;
                            selectedPiece = piece;
@@ -116,12 +120,28 @@ public class Board implements ActionListener
                               gameBoardButtons[i][j].setIcon(new ImageIcon(bishopImages[pieceColor][1]));
                            }
                         }
+                        else if (selectedPiece instanceof Kings){       //Move king to square
+                           if ((i + j) % 2 == 0){
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(kingImages[pieceColor][0]));
+                           }
+                           else{
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(kingImages[pieceColor][1]));
+                           }
+                        }
+                        else if (selectedPiece instanceof Knights){     //Move knight to square
+                           if ((i + j) % 2 == 0){
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(knightImages[pieceColor][0]));
+                           }
+                           else{
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(knightImages[pieceColor][1]));
+                           }
+                        }
                         else if (selectedPiece instanceof Queens){      //Move queen to square
                            if ((i + j) % 2 == 0){
                               gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][0]));
                            }
                            else{
-                              gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][1]));    //queenImages[0][1] is "Images/WhiteQueenDarkSquare.png"
+                              gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][1]));
                            }
                         }
                         else if (selectedPiece instanceof Rooks){       //Move rook to square
@@ -139,8 +159,9 @@ public class Board implements ActionListener
                            gameBoardButtons[8 - Integer.parseInt(String.valueOf(selectedTile.charAt(1)))][Pieces.charFileToInt(selectedTile.charAt(0)) - 1].setIcon(new ImageIcon(lightSquare));
                         }
                         int previousRank = selectedPiece.getRank();                       //Check if pawn was moved twice (for En Passant)
+                        char previousFile = selectedPiece.getFile();                      //Check if king was moved twice (for Castling)
                         selectedPiece.setPosition(8 - i, Pieces.intToCharFile(j + 1));
-                        if (selectedPiece instanceof Pawns){
+                        if (selectedPiece instanceof Pawns){      //Check for En Passant
                            if ((selectedPiece.getRank() - 2) == previousRank || (selectedPiece.getRank() + 2) == previousRank){
                               previousPawn = (Pawns)selectedPiece;
                               previousPawn.setMovedTwice(true);
@@ -155,6 +176,48 @@ public class Board implements ActionListener
                               }
                               else{
                                  gameBoardButtons[i][j].setIcon(new ImageIcon(queenImages[pieceColor][1]));
+                              }
+                           }
+                        }
+                        if (selectedPiece instanceof Kings){      //Check for Castling
+                           if (Pieces.charFileToInt(previousFile) == (Pieces.charFileToInt(selectedPiece.getFile()) - 2)){
+                              for (Pieces piece : piecesOnBoard){
+                                 if (piece.getFile() == 'h' && (piece instanceof Rooks) && piece.getWhitePiece() == selectedPiece.getWhitePiece()){
+                                    piece.setPosition(piece.getRank(), 'f');
+                                    if ((i + j) % 2 == 0){
+                                       gameBoardButtons[i][j - 1].setIcon(new ImageIcon(rookImages[pieceColor][1]));
+                                    }
+                                    else{
+                                       gameBoardButtons[i][j - 1].setIcon(new ImageIcon(rookImages[pieceColor][0]));
+                                    }
+                                    if ((i + j) % 2 == 0){
+                                       gameBoardButtons[i][j + 1].setIcon(new ImageIcon(darkSquare));
+                                    }
+                                    else{
+                                       gameBoardButtons[i][j + 1].setIcon(new ImageIcon(lightSquare));
+                                    }
+                                    break;
+                                 }
+                              }
+                           }        //Check long castle
+                           else if (Pieces.charFileToInt(previousFile) == (Pieces.charFileToInt(selectedPiece.getFile()) + 2)){
+                              for (Pieces piece : piecesOnBoard){
+                                 if (piece.getFile() == 'a' && (piece instanceof Rooks)){
+                                    piece.setPosition(selectedPiece.getRank(), 'd');
+                                    if ((i + j) % 2 == 0){
+                                       gameBoardButtons[i][j + 1].setIcon(new ImageIcon(rookImages[pieceColor][1]));
+                                    }
+                                    else{
+                                       gameBoardButtons[i][j + 1].setIcon(new ImageIcon(rookImages[pieceColor][0]));
+                                    }
+                                    if ((i + j) % 2 == 0){
+                                       gameBoardButtons[i][j - 2].setIcon(new ImageIcon(lightSquare));
+                                    }
+                                    else{
+                                       gameBoardButtons[i][j - 2].setIcon(new ImageIcon(darkSquare));
+                                    }
+                                    break;
+                                 }
                               }
                            }
                         }
@@ -187,12 +250,12 @@ public class Board implements ActionListener
    //Sets the initial board state and adds values to LinkedList<Pieces> piecesOnBoard
    public void resetGame(){
       gameBoardButtons[0][0].setIcon(new ImageIcon(rookImages[1][0]));
-      gameBoardButtons[0][1].setIcon(new ImageIcon(darkSquare));
+      gameBoardButtons[0][1].setIcon(new ImageIcon(knightImages[1][1]));
       gameBoardButtons[0][2].setIcon(new ImageIcon(bishopImages[1][0]));
       gameBoardButtons[0][3].setIcon(new ImageIcon(queenImages[1][1]));
-      gameBoardButtons[0][4].setIcon(new ImageIcon(lightSquare));
+      gameBoardButtons[0][4].setIcon(new ImageIcon(kingImages[1][0]));
       gameBoardButtons[0][5].setIcon(new ImageIcon(bishopImages[1][1]));
-      gameBoardButtons[0][6].setIcon(new ImageIcon(lightSquare));
+      gameBoardButtons[0][6].setIcon(new ImageIcon(knightImages[1][0]));
       gameBoardButtons[0][7].setIcon(new ImageIcon(rookImages[1][1]));
       
       for (j = 0; j < 8; j += 2){
@@ -215,33 +278,40 @@ public class Board implements ActionListener
       }
       
       gameBoardButtons[7][0].setIcon(new ImageIcon(rookImages[0][1]));
-      gameBoardButtons[7][1].setIcon(new ImageIcon(lightSquare));
+      gameBoardButtons[7][1].setIcon(new ImageIcon(knightImages[0][0]));
       gameBoardButtons[7][2].setIcon(new ImageIcon(bishopImages[0][1]));
       gameBoardButtons[7][3].setIcon(new ImageIcon(queenImages[0][0]));
-      gameBoardButtons[7][4].setIcon(new ImageIcon(darkSquare));
+      gameBoardButtons[7][4].setIcon(new ImageIcon(kingImages[0][1]));
       gameBoardButtons[7][5].setIcon(new ImageIcon(bishopImages[0][0]));
-      gameBoardButtons[7][6].setIcon(new ImageIcon(darkSquare));
+      gameBoardButtons[7][6].setIcon(new ImageIcon(knightImages[0][1]));
       gameBoardButtons[7][7].setIcon(new ImageIcon(rookImages[0][0]));
       
       piecesOnBoard = new LinkedList<>();
       
       try{
          for (i = 1; i < 9; i++){
-            piecesOnBoard.add(new Pawns(7, Pieces.intToCharFile(i), false)); //[0] - [7]
+            piecesOnBoard.add(new Pawns(7, Pieces.intToCharFile(i), false));
          }
          for (i = 1; i < 9; i++){
-            piecesOnBoard.add(new Pawns(2, Pieces.intToCharFile(i), true)); //[8] - [15]
+            piecesOnBoard.add(new Pawns(2, Pieces.intToCharFile(i), true));
          }
-         piecesOnBoard.add(new Rooks(8, 'a', false));
+         
          piecesOnBoard.add(new Bishops(8, 'c', false));
-         piecesOnBoard.add(new Queens(8, 'd', false));
          piecesOnBoard.add(new Bishops(8, 'f', false));
+         piecesOnBoard.add(new Bishops(1, 'c', true));
+         piecesOnBoard.add(new Bishops(1, 'f', true));
+         piecesOnBoard.add(new Knights(8, 'b', false));
+         piecesOnBoard.add(new Knights(8, 'g', false));
+         piecesOnBoard.add(new Knights(1, 'b', true));
+         piecesOnBoard.add(new Knights(1, 'g', true));
+         piecesOnBoard.add(new Rooks(8, 'a', false));
          piecesOnBoard.add(new Rooks(8, 'h', false));
          piecesOnBoard.add(new Rooks(1, 'a', true));
-         piecesOnBoard.add(new Bishops(1, 'c', true));
-         piecesOnBoard.add(new Queens(1, 'd', true));
-         piecesOnBoard.add(new Bishops(1, 'f', true));
          piecesOnBoard.add(new Rooks(1, 'h', true));
+         piecesOnBoard.add(new Queens(8, 'd', false));
+         piecesOnBoard.add(new Queens(1, 'd', true));
+         piecesOnBoard.add(new Kings(8, 'e', false));
+         piecesOnBoard.add(new Kings(1, 'e', true));
       }
       catch (UnavailableSquareException e){
       }
